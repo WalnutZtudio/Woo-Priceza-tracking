@@ -30,7 +30,8 @@ class Wz_priceza_tracking_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		delete_option("wz_priceza_tracking_license");
+		delete_option("wz_priceza_tracking_merchantId");
 	}
 
 }

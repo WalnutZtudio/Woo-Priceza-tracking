@@ -101,3 +101,75 @@ class Wz_priceza_tracking_Public {
 	}
 
 }
+
+/**
+ * Add custom tracking code to the thank-you page
+ */
+add_action( 'woocommerce_thankyou', 'my_custom_tracking' );
+
+function my_custom_tracking( $order_id ) {
+
+	// Lets grab the order
+	$order = wc_get_order( $order_id );
+	// Get Payment title method
+	$payment_js = $order->get_payment_method_title();
+
+	/**
+	 * Put your tracking code here
+	 * You can get the order total etc e.g. $order->get_total();
+	 */
+	 
+	// This is the order total
+	$order->get_total();
+ 
+	// This is how to grab line items from the order 
+	$line_items = $order->get_items();
+
+	// This loops over line items
+	foreach ( $line_items as $item ) {
+  		// This will be a product
+		$product = $order->get_product_from_item( $item );
+
+  		// This is the products ID
+		$id = $product->get_id();
+		$product_js .= $id ."|" ;
+		
+		// This is the qty purchased
+		$qty = $item['qty'];
+		$qty_js .= $qty . "|";
+		
+		// Line item total cost including taxes and rounded
+		$total = $order->get_line_total( $item, true, true );
+		
+		// Line item subtotal (before discounts)
+		$subtotal = $order->get_line_subtotal( $item, true, true );
+	}
+
+	// Remove end of string |
+	$product_js = substr($product_js, 0, -1);
+	$qty_js = substr($qty_js, 0, -1);
+	$merchantId = get_option('wz_priceza_tracking_merchantId');
+	?>
+	
+	<script type="text/javascript">
+		var _pztrack = {
+			type : "purchase",
+			merchantId : "<?= $merchantId ?>",
+			products: "<?= $product_js ?>",
+			value : "<?= $qty_js ?>",
+			filter : "<?= $payment_js ?>",
+			data: "<?= $order->id ?>"
+		};
+
+		(function() {
+			var pzsc = document.createElement('script');
+			pzsc.type = 'text/javascript';
+			pzsc.async = true;
+			pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(pzsc, s);
+		})();
+	</script>
+
+<?php
+}

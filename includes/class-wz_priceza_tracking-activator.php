@@ -31,6 +31,7 @@ class Wz_priceza_tracking_Activator {
 	 */
 	public static function activate() {
 
+		
 	}
 
 }
