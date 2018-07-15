@@ -3,7 +3,7 @@ Wordpress plugin for integrated Priceza Sales Conversion Tracking with WooCommer
 
 It so Easy!!
 
-you just insert merchantId it done.
+You just insert merchantId it done.
 
 ## Change Log
 
