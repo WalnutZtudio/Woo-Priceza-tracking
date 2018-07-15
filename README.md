@@ -1,6 +1,8 @@
 # Woo Priceza tracking
 Wordpress plugin for integrated Priceza Sales Conversion Tracking with WooCommerce.
+
 It so Easy!!
+
 you just insert merchantId it done.
 
 ## Change Log
