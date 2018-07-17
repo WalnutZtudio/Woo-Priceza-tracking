@@ -155,7 +155,7 @@ function my_custom_tracking( $order_id ) {
 		var _pztrack = {
 			type : "purchase",
 			merchantId : "<?= $merchantId ?>",
-			products: "<?= $product_js ?>",
+			productId: "<?= $product_js ?>",
 			value : "<?= $qty_js ?>",
 			filter : "<?= $payment_js ?>",
 			data: "<?= $order->id ?>"
