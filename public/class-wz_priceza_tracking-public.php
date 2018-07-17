@@ -155,20 +155,37 @@ function my_custom_tracking( $order_id ) {
 		var _pztrack = {
 			type : "purchase",
 			merchantId : "<?= $merchantId ?>",
-			products: "<?= $product_js ?>",
+			productId: "<?= $product_js ?>",
 			value : "<?= $qty_js ?>",
 			filter : "<?= $payment_js ?>",
 			data: "<?= $order->id ?>"
 		};
 
 		(function() {
-			var pzsc = document.createElement('script');
-			pzsc.type = 'text/javascript';
-			pzsc.async = true;
-			pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
-			var s = document.getElementsByTagName('script')[0];
-			s.parentNode.insertBefore(pzsc, s);
+		    var pzsc = document.createElement('script');
+		    pzsc.type = 'text/javascript';
+		    pzsc.async = true;
+		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
+		    var s = document.getElementsByTagName('script')[0];
+		    s.parentNode.insertBefore(pzsc, s);
 		})();
+	</script>
+
+	<script type="text/javascript">
+		var _pztrack = {
+			type : "purchase",
+			merchantId : "<?= $merchantId ?>",
+			filter : "MEMBER-SIGNUP"
+		};
+
+		/*(function() {
+		    var pzsc = document.createElement('script');
+		    pzsc.type = 'text/javascript';
+		    pzsc.async = true;
+		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
+		    var s = document.getElementsByTagName('script')[0];
+		    s.parentNode.insertBefore(pzsc, s);
+		})();*/
 	</script>
 
 <?php
