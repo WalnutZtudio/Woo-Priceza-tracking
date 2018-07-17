@@ -7,6 +7,9 @@ You just insert merchantId it done.
 
 ## Change Log
 
+### 1.0.3
+* Send productID, Member Signup to API
+
 ### 1.0.0
 * Post type for merchantId field
 * Hook to JS Priceza tracking

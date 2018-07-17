@@ -103,11 +103,10 @@ class Wz_priceza_tracking_Public {
 }
 
 /**
- * Add custom tracking code to the thank-you page
+ * Add Priceza Tracking code to the thank-you page
  */
-add_action( 'woocommerce_thankyou', 'my_custom_tracking' );
 
-function my_custom_tracking( $order_id ) {
+function wz_priceza_tracking( $order_id ) {
 
 	// Lets grab the order
 	$order = wc_get_order( $order_id );
@@ -133,6 +132,11 @@ function my_custom_tracking( $order_id ) {
   		// This is the products ID
 		$id = $product->get_id();
 		$product_js .= $id ."|" ;
+
+		// This is the products subtotal
+		$price = $order->get_line_subtotal( $item, true, true );
+		$price = number_format((float)$price, 2, '.', '');
+		$price_js .= $price . "|";
 		
 		// This is the qty purchased
 		$qty = $item['qty'];
@@ -148,6 +152,7 @@ function my_custom_tracking( $order_id ) {
 	// Remove end of string |
 	$product_js = substr($product_js, 0, -1);
 	$qty_js = substr($qty_js, 0, -1);
+	$price_js = substr($price_js, 0, -1);
 	$merchantId = get_option('wz_priceza_tracking_merchantId');
 	?>
 	
@@ -156,7 +161,7 @@ function my_custom_tracking( $order_id ) {
 			type : "purchase",
 			merchantId : "<?= $merchantId ?>",
 			productId: "<?= $product_js ?>",
-			value : "<?= $qty_js ?>",
+			value : "<?= $price_js ?>",
 			filter : "<?= $payment_js ?>",
 			data: "<?= $order->id ?>"
 		};
@@ -178,14 +183,14 @@ function my_custom_tracking( $order_id ) {
 			filter : "MEMBER-SIGNUP"
 		};
 
-		/*(function() {
+		(function() {
 		    var pzsc = document.createElement('script');
 		    pzsc.type = 'text/javascript';
 		    pzsc.async = true;
 		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
 		    var s = document.getElementsByTagName('script')[0];
 		    s.parentNode.insertBefore(pzsc, s);
-		})();*/
+		})();
 	</script>
 
 <?php
