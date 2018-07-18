@@ -7,6 +7,9 @@ You just insert merchantId it done.
 
 ## Change Log
 
+### 1.0.4
+* Fix bug for Member Signup.
+
 ### 1.0.3
 * Send productID, Member Signup to API
 

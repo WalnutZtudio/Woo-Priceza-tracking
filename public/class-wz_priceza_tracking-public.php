@@ -177,7 +177,7 @@ function wz_priceza_tracking( $order_id ) {
 	</script>
 
 	<script type="text/javascript">
-		var _pztrack = {
+		/*var _pztrack = {
 			type : "purchase",
 			merchantId : "<?= $merchantId ?>",
 			filter : "MEMBER-SIGNUP"
@@ -190,7 +190,7 @@ function wz_priceza_tracking( $order_id ) {
 		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
 		    var s = document.getElementsByTagName('script')[0];
 		    s.parentNode.insertBefore(pzsc, s);
-		})();
+		})();*/
 	</script>
 
 <?php

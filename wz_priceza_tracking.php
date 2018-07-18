@@ -16,7 +16,7 @@
  * Plugin Name:       Woo Priceza Tracking
  * Plugin URI:        https://walnutztudio.com/woo-priceza-tracking/
  * Description:       Priceza Sales Conversion Tracking for Woocommerce.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            WalnutZtudio
  * Author URI:        https://walnutztudio.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'DD_WZ_PRICEZA_TRACKING_PLUGIN_VERSION', '1.0.3' );
+define( 'DD_WZ_PRICEZA_TRACKING_PLUGIN_VERSION', '1.0.4' );
 
 // this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
 define( 'EDD_WZ_PRICEZA_TRACKING_STORE_URL', 'https://walnutztudio.com' );
