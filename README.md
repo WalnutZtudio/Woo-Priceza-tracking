@@ -7,6 +7,9 @@ You just insert merchantId it done.
 
 ## Change Log
 
+### 1.0.5
+* Bug fixes and performance improvements
+
 ### 1.0.4
 * Bug fix for Member Signup
 * Security check
