@@ -150,48 +150,39 @@ function wz_priceza_tracking( $order_id ) {
 	}
 
 	// Remove end of string |
-	$product_js = substr($product_js, 0, -1);
-	$qty_js = substr($qty_js, 0, -1);
-	$price_js = substr($price_js, 0, -1);
-	$merchantId = get_option('wz_priceza_tracking_merchantId');
+	if( get_option('wz_priceza_tracking_license_status') !== false && get_option('wz_priceza_tracking_license_status') == 'valid' ) {
+		$product_js = substr($product_js, 0, -1);
+		$qty_js = substr($qty_js, 0, -1);
+		$price_js = substr($price_js, 0, -1);
+		$order_js = $order->id;
+		$merchantId = get_option('wz_priceza_tracking_merchantId');
+	} else{
+		$product_js = '';
+		$qty_js = '';
+		$price_js = '';
+		$payment_js ='';
+		$order_js = '';
+	}
 	?>
-	
-	<script type="text/javascript">
-		var _pztrack = {
-			type : "purchase",
-			merchantId : "<?= $merchantId ?>",
-			productId: "<?= $product_js ?>",
-			value : "<?= $price_js ?>",
-			filter : "<?= $payment_js ?>",
-			data: "<?= $order->id ?>"
-		};
 
-		(function() {
-		    var pzsc = document.createElement('script');
-		    pzsc.type = 'text/javascript';
-		    pzsc.async = true;
-		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
-		    var s = document.getElementsByTagName('script')[0];
-		    s.parentNode.insertBefore(pzsc, s);
-		})();
-	</script>
+		<script type="text/javascript">
+			var _pztrack = {
+				type : "purchase",
+				merchantId : "<?= $merchantId ?>",
+				productId: "<?= $product_js ?>",
+				value : "<?= $price_js ?>",
+				filter : "<?= $payment_js ?>",
+				data: "<?= $order_js ?>"
+			};
 
-	<script type="text/javascript">
-		/*var _pztrack = {
-			type : "purchase",
-			merchantId : "<?= $merchantId ?>",
-			filter : "MEMBER-SIGNUP"
-		};
-
-		(function() {
-		    var pzsc = document.createElement('script');
-		    pzsc.type = 'text/javascript';
-		    pzsc.async = true;
-		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
-		    var s = document.getElementsByTagName('script')[0];
-		    s.parentNode.insertBefore(pzsc, s);
-		})();*/
-	</script>
-
-<?php
+			/*(function() {
+				var pzsc = document.createElement('script');
+				pzsc.type = 'text/javascript';
+				pzsc.async = true;
+				pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(pzsc, s);
+			})();*/
+		</script>
+	<?php
 }

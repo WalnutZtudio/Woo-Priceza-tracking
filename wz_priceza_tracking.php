@@ -14,8 +14,8 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Woo Priceza Tracking
- * Plugin URI:        https://walnutztudio.com/woo-priceza-tracking/
- * Description:       Priceza Sales Conversion Tracking for Woocommerce.
+ * Plugin URI:        https://walnutztudio.com/downloads/woo-priceza-tracking/
+ * Description:       Priceza Sales Conversion Tracking for WooCommerce.
  * Version:           1.0.4
  * Author:            WalnutZtudio
  * Author URI:        https://walnutztudio.com
@@ -35,13 +35,13 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'DD_WZ_PRICEZA_TRACKING_PLUGIN_VERSION', '1.0.4' );
+define( 'WZ_PRICEZA_TRACKING_VERSION', '1.0.4' );
 
 // this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
-define( 'EDD_WZ_PRICEZA_TRACKING_STORE_URL', 'https://walnutztudio.com' );
+define( 'WZ_PRICEZA_TRACKING_STORE_URL', 'https://walnutztudio.com' );
 
 // the name of your product. This should match the download name in EDD exactly
-define( 'EDD_WZ_PRICEZA_TRACKING_ITEM_NAME', 'Woo Priceza Tracking' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+define( 'WZ_PRICEZA_TRACKING_ITEM_NAME', 'Woo Priceza Tracking' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 
 if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 // load our custom updater
@@ -91,7 +91,11 @@ function run_wz_priceza_tracking() {
 
 }
 run_wz_priceza_tracking();
-add_action( 'woocommerce_thankyou', 'wz_priceza_tracking' );
+
+if( get_option('wz_priceza_tracking_license_status') !== false && get_option('wz_priceza_tracking_license_status') == 'valid' ) {
+	add_action( 'woocommerce_thankyou', 'wz_priceza_tracking' );
+	//add_action( 'user_register', 'wz_priceza_tracking_signup' );
+}
 
 /**
 * Updater.
@@ -104,10 +108,10 @@ function edd_sl_wz_priceza_tracking_plugin_updater() {
 	if($status == 'valid'){
 		/* retrieve our license key from the DB */
 		$license_key = trim( get_option( 'wz_priceza_tracking_license_key' ) );
-		$edd_updater = new EDD_SL_Plugin_Updater( EDD_WZ_PRICEZA_TRACKING_STORE_URL, __FILE__, array(
-			'version'   => DD_WZ_PRICEZA_TRACKING_PLUGIN_VERSION,
+		$edd_updater = new EDD_SL_Plugin_Updater( WZ_PRICEZA_TRACKING_STORE_URL, __FILE__, array(
+			'version'   => WZ_PRICEZA_TRACKING_VERSION,
 			'license'   => $license_key,
-			'item_name' => EDD_WZ_PRICEZA_TRACKING_ITEM_NAME,
+			'item_name' => WZ_PRICEZA_TRACKING_ITEM_NAME,
 			'author'    => 'WalnutZtudio'
 		));
 	}
@@ -115,13 +119,13 @@ function edd_sl_wz_priceza_tracking_plugin_updater() {
 
 
 
-function edd_sample_activate_license() {
+function wz_priceza_tracking_activate_license() {
 
 	// listen for our activate button to be clicked
 	if( isset( $_POST['wz_priceza_tracking_license_activate'] ) ) {
 
 		// run a quick security check
-	 	if( ! check_admin_referer( 'edd_sample_nonce', 'edd_sample_nonce' ) )
+	 	if( ! check_admin_referer( 'wz_priceza_tracking_nonce', 'wz_priceza_tracking_nonce' ) )
 			return; // get out if we didn't click the Activate button
 
 		// retrieve the license from the database
@@ -132,12 +136,12 @@ function edd_sample_activate_license() {
 		$api_params = array(
 			'edd_action' => 'activate_license',
 			'license'    => $license,
-			'item_name'  => urlencode( EDD_WZ_PRICEZA_TRACKING_ITEM_NAME ), // the name of our product in EDD
+			'item_name'  => urlencode( WZ_PRICEZA_TRACKING_ITEM_NAME ), // the name of our product in EDD
 			'url'        => home_url()
 		);
 
 		// Call the custom API.
-		$response = wp_remote_post( EDD_WZ_PRICEZA_TRACKING_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+		$response = wp_remote_post( WZ_PRICEZA_TRACKING_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
 
 		// make sure the response came back okay
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -178,7 +182,7 @@ function edd_sample_activate_license() {
 
 					case 'item_name_mismatch' :
 
-						$message = sprintf( __( 'This appears to be an invalid license key for %s.' ), EDD_WZ_PRICEZA_TRACKING_ITEM_NAME );
+						$message = sprintf( __( 'This appears to be an invalid license key for %s.' ), WZ_PRICEZA_TRACKING_ITEM_NAME );
 						break;
 
 					case 'no_activations_left':
@@ -198,7 +202,7 @@ function edd_sample_activate_license() {
 
 		// Check if anything passed on a message constituting a failure
 		if ( ! empty( $message ) ) {
-			$base_url = admin_url( 'options-general.php?page=wz-priceza-tracking&tab=license');
+			$base_url = admin_url( 'admin.php?page=wz-priceza-tracking&tab=license');
 			$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
 
 			wp_redirect( $redirect );
@@ -208,11 +212,11 @@ function edd_sample_activate_license() {
 		// $license_data->license will be either "valid" or "invalid"
 
 		update_option( 'wz_priceza_tracking_license_status', $license_data->license );
-		wp_redirect( admin_url( 'options-general.php?page=wz-priceza-tracking&tab=license' ) );
+		wp_redirect( admin_url( 'admin.php?page=wz-priceza-tracking&tab=license' ) );
 		exit();
 	}
 }
-add_action('admin_init', 'edd_sample_activate_license');
+add_action('admin_init', 'wz_priceza_tracking_activate_license');
 
 
 
@@ -229,7 +233,7 @@ function wz_priceza_tracking_deactivate_license() {
 	if( isset( $_POST['wz_priceza_tracking_license_deactivate'] ) ) {
 
 		/* run a quick security check */
-		if( ! check_admin_referer( 'edd_sample_nonce', 'edd_sample_nonce' ) )
+		if( ! check_admin_referer( 'wz_priceza_tracking_nonce', 'wz_priceza_tracking_nonce' ) )
 			return; // get out if we didn't click the Activate button
 
 		/* retrieve the license from the database */
@@ -239,12 +243,12 @@ function wz_priceza_tracking_deactivate_license() {
 		$api_params = array(
 			'edd_action' => 'deactivate_license',
 			'license'    => $license,
-			'item_name'  => urlencode( EDD_WZ_PRICEZA_TRACKING_ITEM_NAME ),
+			'item_name'  => urlencode( WZ_PRICEZA_TRACKING_ITEM_NAME ),
 			'url'        => home_url()
 		);
 
 		/* Call the custom API. */
-		$response = wp_remote_post( EDD_WZ_PRICEZA_TRACKING_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+		$response = wp_remote_post( WZ_PRICEZA_TRACKING_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
 
 		/* make sure the response came back okay */
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -270,12 +274,12 @@ function wz_priceza_tracking_deactivate_license() {
 			delete_option( 'wz_priceza_tracking_license_status' );
 		}
 
-		wp_redirect( admin_url( 'options-general.php?page=wz-priceza-tracking&tab=license' ) );
+		wp_redirect( admin_url( 'admin.php?page=wz-priceza-tracking&tab=license' ) );
 		exit();
 	}
 }
 
-function edd_sample_check_license() {
+function wz_priceza_tracking_check_license() {
 
 	global $wp_version;
 
@@ -284,12 +288,12 @@ function edd_sample_check_license() {
 	$api_params = array(
 		'edd_action' => 'check_license',
 		'license' => $license,
-		'item_name' => urlencode( EDD_WZ_PRICEZA_TRACKING_ITEM_NAME ),
+		'item_name' => urlencode( WZ_PRICEZA_TRACKING_ITEM_NAME ),
 		'url'       => home_url()
 	);
 
 	// Call the custom API.
-	$response = wp_remote_post( EDD_WZ_PRICEZA_TRACKING_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+	$response = wp_remote_post( WZ_PRICEZA_TRACKING_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
 
 	if ( is_wp_error( $response ) )
 		return false;

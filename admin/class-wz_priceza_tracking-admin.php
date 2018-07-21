@@ -102,115 +102,125 @@ class Wz_priceza_tracking_Admin {
 
 }
 
-add_action( 'admin_menu', 'walnut_priceza_tracking_plugin_menu' );
-if( !function_exists("walnut_priceza_tracking_plugin_menu") ){
+/**
+ * Check if WooCommerce is active
+ **/
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+	
+	add_action( 'admin_menu', 'walnut_priceza_tracking_plugin_menu', 69 );
 	function walnut_priceza_tracking_plugin_menu(){
 
+	$parent_slug = 'woocommerce';
 	$page_title = 'Woo Priceza Tracking';
 	$menu_title = 'Priceza Tracking';
 	$capability = 'manage_options';
 	$menu_slug  = 'wz-priceza-tracking';
 	$function   = 'walnut_priceza_tracking_page';
 
-	add_options_page( $page_title,
+	add_submenu_page($parent_slug,
+					$page_title,
 					$menu_title, 
 					$capability, 
-					$menu_slug, 
+					$menu_slug,
                     $function);
 	}
-}
 
 
-if( !function_exists("walnut_priceza_tracking_page") ){
-	function walnut_priceza_tracking_page(){
 
-		if(!isset($_GET['tab']) || $_GET['tab'] == '' || $_GET['tab'] == 'license'){
-			$nav_tab_active = 'license';
-		}elseif($_GET['tab'] == 'license'){
-			$nav_tab_active = 'license';
-		}else {
-			$nav_tab_active = 'settings';
-		}
-	?>
-	
-	<div class="wrap">
-			<h1>Woo Priceza Tracking</h1>
-			<form method="post" action="options.php">
-				<h2 class="nav-tab-wrapper">
-				<?php
-					$license_key = get_option( 'wz_priceza_tracking_license_key' );
-					$status  = get_option( 'wz_priceza_tracking_license_status' );
-					?>
-					<?php if( $status !== false && $status == 'valid') { 
-						//$nav_tab_active = 'settings';
+	if( !function_exists("walnut_priceza_tracking_page") ){
+		function walnut_priceza_tracking_page(){
+
+			if(!isset($_GET['tab']) || $_GET['tab'] == '' || $_GET['tab'] == 'settings'){
+				if( get_option('wz_priceza_tracking_license_status') !== false && get_option('wz_priceza_tracking_license_status') == 'valid' ) {
+					$nav_tab_active = 'settings';
+				} else {
+					$nav_tab_active = 'license';
+				}
+			}elseif($_GET['tab'] == 'license'){
+				$nav_tab_active = 'license';
+			}else {
+				$nav_tab_active = 'settings';
+			}
+		?>
+		
+		<div class="wrap">
+				<h1>Woo Priceza Tracking</h1>
+				<form method="post" action="options.php">
+					<h2 class="nav-tab-wrapper">
+					<?php
+						$license_key = get_option( 'wz_priceza_tracking_license_key' );
+						$status  = get_option( 'wz_priceza_tracking_license_status' );
 						?>
-						<a href="<?php echo admin_url('options-general.php?page=wz-priceza-tracking&tab=settings'); ?>" class="nav-tab <?php if($nav_tab_active == 'settings') echo 'nav-tab-active'; ?>">
-							<?php _e( 'Settings', 'wz_priceza_tracking' ); ?>
-						</a>
+						<?php if( $status !== false && $status == 'valid') { 
+							?>
+							<a href="<?php echo admin_url('admin.php?page=wz-priceza-tracking&tab=settings'); ?>" class="nav-tab <?php if($nav_tab_active == 'settings') echo 'nav-tab-active'; ?>">
+								<?php _e( 'Settings', 'wz_priceza_tracking' ); ?>
+							</a>
+						<?php } ?>
+							<a href="<?php echo admin_url('admin.php?page=wz-priceza-tracking&tab=license'); ?>" class="nav-tab <?php if($nav_tab_active == 'license') echo 'nav-tab-active'; ?>">
+								<?php _e( 'License', 'wz_priceza_tracking' ); ?>
+							</a>
+					</h2>
+					<?php if($nav_tab_active == 'settings'){?>
+						<?php settings_fields( 'wz_priceza_tracking_setting' ); ?>
+						<!--?php do_settings_sections( 'wz_priceza_tracking_setting' ); ?-->
+						<h2 class="title"><?php _e('Setting', 'wz_priceza_tracking'); ?></h2>  
+						<p>if have problem you can contact <a href="https://walnutztudio.com" target="_blank">WalnutZtudio</a></p>
+						<table class="form-table" width="100%">
+							<tbody>
+								<tr valign="top">
+									<th scope="row" valign="top">
+										<?php _e('merchantId', 'wz_priceza_tracking'); ?> 
+									</th>
+									<td>
+										<input type="text" name="wz_priceza_tracking_merchantId" value="<?php echo get_option( 'wz_priceza_tracking_merchantId' ); ?>"/>
+										<p class="description" id="wz_priceza_tracking_enable_description"><?php _e('Your can insert merchantId for Priceza Sales Conversion Tracking.', 'wz_priceza_tracking');?></p>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					<?php } ?>
-						<a href="<?php echo admin_url('options-general.php?page=wz-priceza-tracking&tab=license'); ?>" class="nav-tab <?php if($nav_tab_active == 'license') echo 'nav-tab-active'; ?>">
-							<?php _e( 'License', 'wz_priceza_tracking' ); ?>
-						</a>
-				</h2>
-				<?php if($nav_tab_active == 'settings'){?>
-					<?php settings_fields( 'wz_priceza_tracking_setting' ); ?>
-					<!--?php do_settings_sections( 'wz_priceza_tracking_setting' ); ?-->
-					<h2 class="title"><?php _e('Setting', 'wz_priceza_tracking'); ?></h2>  
-					<p>if have problem you can contact <a href="https://walnutztudio.com" target="_blank">WalnutZtudio</a></p>
-					<table class="form-table" width="100%">
-						<tbody>
-							<tr valign="top">
-								<th scope="row" valign="top">
-									<?php _e('merchantId', 'wz_priceza_tracking'); ?> 
-								</th>
-								<td>
-									<input type="text" name="wz_priceza_tracking_merchantId" value="<?php echo get_option( 'wz_priceza_tracking_merchantId' ); ?>"/>
-									<p class="description" id="wz_priceza_tracking_enable_description"><?php _e('Your can insert merchantId for Priceza Sales Conversion Tracking.', 'wz_priceza_tracking');?></p>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				<?php } ?>
 
-				<?php if($nav_tab_active == 'license'){ ?>
-					<?php settings_fields( 'wz_priceza_tracking_license' ); ?>
-					<!--?php do_settings_sections( 'wz_priceza_tracking_license' ); ?-->
-					<h2 class="title"><?php _e('License', 'wz_priceza_tracking'); ?></h2>
-					<table class="form-table" width="100%">
-						<tbody>
-							<tr valign="top">
-								<th scope="row" valign="top">
-									<?php _e('License Key', 'wz_priceza_tracking'); ?> 
-								</th>
-								<td>
-									<input type="text" name="wz_priceza_tracking_license_key" class="wz_priceza_tracking_license_key" value="<?php esc_attr_e( $license_key ); ?>"/>
-									<label class="description" for="wz_priceza_tracking_license_key"><?php _e('Enter your license key'); ?></label>
-								</td>
-							</tr>
-							<?php if( false !== $license_key ) { ?>
-							<tr valign="top">
-								<th scope="row" valign="top">
-									<?php _e('Activate License', 'wz_priceza_tracking'); ?>
-								</th>
-								<td>
-									<?php if( $status !== false && $status == 'valid' ) { ?>
-										<span style="color:green;"><?php _e('active', 'wz_priceza_tracking'); ?></span>
-										<?php wp_nonce_field( 'edd_sample_nonce', 'edd_sample_nonce' ); ?>
-										<input type="submit" class="button-secondary" name="wz_priceza_tracking_license_deactivate" value="<?php _e('Deactivate License', 'wz_priceza_tracking'); ?>"/>
-									<?php } else {
-										wp_nonce_field( 'edd_sample_nonce', 'edd_sample_nonce' ); ?>
-										<input type="submit" class="button-secondary" name="wz_priceza_tracking_license_activate" value="<?php _e('Activate License', 'wz_priceza_tracking'); ?>"/>
+					<?php if($nav_tab_active == 'license'){ ?>
+						<?php settings_fields( 'wz_priceza_tracking_license' ); ?>
+						<!--?php do_settings_sections( 'wz_priceza_tracking_license' ); ?-->
+						<h2 class="title"><?php _e('License', 'wz_priceza_tracking'); ?></h2>
+						<table class="form-table" width="100%">
+							<tbody>
+								<tr valign="top">
+									<th scope="row" valign="top">
+										<?php _e('License Key', 'wz_priceza_tracking'); ?> 
+									</th>
+									<td>
+										<input type="password" name="wz_priceza_tracking_license_key" class="wz_priceza_tracking_license_key" value="<?php esc_attr_e( $license_key ); ?>"/>
+										<label class="description" for="wz_priceza_tracking_license_key"><?php _e('Enter your license key'); ?></label>
+									</td>
+								</tr>
+								<?php if( false !== $license_key ) { ?>
+								<tr valign="top">
+									<th scope="row" valign="top">
+										<?php _e('Activate License', 'wz_priceza_tracking'); ?>
+									</th>
+									<td>
+										<?php if( $status !== false && $status == 'valid' ) { ?>
+											<span style="color:green;"><?php _e('active', 'wz_priceza_tracking'); ?></span>
+											<?php wp_nonce_field( 'wz_priceza_tracking_nonce', 'wz_priceza_tracking_nonce' ); ?>
+											<input type="submit" class="button-secondary" name="wz_priceza_tracking_license_deactivate" value="<?php _e('Deactivate License', 'wz_priceza_tracking'); ?>"/>
+										<?php } else {
+											wp_nonce_field( 'wz_priceza_tracking_nonce', 'wz_priceza_tracking_nonce' ); ?>
+											<input type="submit" class="button-secondary" name="wz_priceza_tracking_license_activate" value="<?php _e('Activate License', 'wz_priceza_tracking'); ?>"/>
+									<?php } ?>
+									</td>
+								</tr>
 								<?php } ?>
-								</td>
-							</tr>
-							<?php } ?>
-						</tbody>
-					</table>
-				<?php } ?>
-				<?php submit_button(); ?>
-			</form>
-		</div>
-	<?php
+							</tbody>
+						</table>
+					<?php } ?>
+					<?php submit_button(); ?>
+				</form>
+			</div>
+		<?php
+		}
 	}
 }
 

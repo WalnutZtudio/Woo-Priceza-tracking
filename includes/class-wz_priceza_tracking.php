@@ -216,3 +216,29 @@ class Wz_priceza_tracking {
 	}
 
 }
+
+
+function wz_priceza_tracking_signup( $user_id ) {
+
+	$merchantId = get_option('wz_priceza_tracking_merchantId');
+	?>
+
+	<script type="text/javascript">
+		var _pztrack = {
+			type : "purchase",
+			merchantId : "<?= $merchantId ?>",
+			filter : "MEMBER-SIGNUP"
+		};
+
+		/*(function() {
+		    var pzsc = document.createElement('script');
+		    pzsc.type = 'text/javascript';
+		    pzsc.async = true;
+		    pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
+		    var s = document.getElementsByTagName('script')[0];
+		    s.parentNode.insertBefore(pzsc, s);
+		})();*/
+	</script>
+
+<?php
+}
