@@ -175,14 +175,14 @@ function wz_priceza_tracking( $order_id ) {
 				data: "<?= $order_js ?>"
 			};
 
-			/*(function() {
+			(function() {
 				var pzsc = document.createElement('script');
 				pzsc.type = 'text/javascript';
 				pzsc.async = true;
 				pzsc.src = ('https:' == document.location.protocol ? 'https://www.' : 'http://www.') + 'priceza.com/js/tracking-2.0.js';    
 				var s = document.getElementsByTagName('script')[0];
 				s.parentNode.insertBefore(pzsc, s);
-			})();*/
+			})();
 		</script>
 	<?php
 }
