@@ -8,6 +8,10 @@ You just insert merchantId it done.
 ## Change Log
 
 ### 1.0.4
+* Bug fixes and performance improvements
+* Auto update function
+
+### 1.0.4
 * Bug fix for Member Signup
 * Security check
 
